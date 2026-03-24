@@ -1,0 +1,114 @@
+{% extends "plan_todo_app/base.html" %}
+{% block title %}{{ todo_list.name }} - My Todo-s{% endblock %}
+{% block content %}
+{% load static %}
+
+<div class="titlebar">
+  <h1 class="big-title">{{ todo_list.name }}</h1>
+</div>
+
+<section class="add-card">
+  <form class="add-form" action="{% url 'plan_todo_app:add' todo_list.id %}" method="post">
+    {% csrf_token %}
+
+    <div class="add-left">
+      {{ create_form.title }}
+    </div>
+
+    <div class="add-right">
+      <div class="calendar-wrap" title="Due date">
+        {{ create_form.due_date }}
+      </div>
+      <button class="btn" type="submit">ADD</button>
+    </div>
+  </form>
+</section>
+
+<div class="divider"></div>
+
+<form class="toolbar" method="get">
+  <div class="field">
+    <span class="label">Filter</span>
+    <select name="filter" class="select">
+      <option value="all" {% if filter_value == "all" %}selected{% endif %}>All</option>
+      <option value="active" {% if filter_value == "active" %}selected{% endif %}>Active</option>
+      <option value="done" {% if filter_value == "done" %}selected{% endif %}>Done</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <span class="label">Sort</span>
+    <select name="sort" class="select">
+      <option value="added_desc" {% if sort_value == "added_desc" %}selected{% endif %}>Added date</option>
+      <option value="added_asc" {% if sort_value == "added_asc" %}selected{% endif %}>Added date (oldest)</option>
+      <option value="due_asc" {% if sort_value == "due_asc" %}selected{% endif %}>Due date</option>
+      <option value="due_desc" {% if sort_value == "due_desc" %}selected{% endif %}>Due date (latest)</option>
+    </select>
+  </div>
+
+  {% if edit_todo %}
+    <input type="hidden" name="edit" value="{{ edit_todo.id }}">
+  {% endif %}
+
+  <button class="toolbar-submit" type="submit" title="Apply">Apply</button>
+</form>
+
+<section class="list">
+  {% for t in todos %}
+    <div class="row">
+      <form action="{% url 'plan_todo_app:toggle' todo_list.id t.id %}" method="post">
+        {% csrf_token %}
+        <button class="chk {% if t.is_done %}checked{% endif %}" type="submit" aria-label="toggle done"></button>
+      </form>
+
+      <div class="task">
+        {% if edit_todo and edit_todo.id == t.id %}
+          <form class="edit-form" action="{% url 'plan_todo_app:update' todo_list.id t.id %}" method="post">
+            {% csrf_token %}
+            {{ edit_form.title }}
+            <div class="edit-controls">
+              {{ edit_form.due_date }}
+              <label class="done-toggle">
+                {{ edit_form.is_done }} Done
+              </label>
+              <button class="btn btn-small" type="submit">Save</button>
+              <a class="link" href="{% url 'plan_todo_app:list_detail' todo_list.id %}?filter={{ filter_value }}&sort={{ sort_value }}">Cancel</a>
+            </div>
+          </form>
+        {% else %}
+          <div class="{% if t.is_done %}task-done{% endif %}">
+            {{ t.title }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="pill">
+        {% if t.due_date %}
+          <span class="pill-icon" aria-hidden="true">⏳</span>
+          {{ t.due_date|date:"jS M Y" }}
+        {% endif %}
+      </div>
+
+      <div class="right">
+        <div class="actions">
+          <a class="action edit" title="edit"
+             href="{% url 'plan_todo_app:list_detail' todo_list.id %}?filter={{ filter_value }}&sort={{ sort_value }}&edit={{ t.id }}">✎</a>
+
+          <form action="{% url 'plan_todo_app:delete' todo_list.id t.id %}" method="post" onsubmit="return confirm('Delete this todo?');">
+            {% csrf_token %}
+            <button class="action del" title="delete" type="submit">🗑</button>
+          </form>
+        </div>
+
+        <div class="meta">
+          <span class="info">i</span>
+          {{ t.created_at|date:"jS M Y" }}
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <div class="empty">No todos in this list yet. Add one above.</div>
+  {% endfor %}
+</section>
+
+{% endblock %}

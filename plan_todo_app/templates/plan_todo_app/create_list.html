@@ -1,0 +1,42 @@
+{% extends "plan_todo_app/base.html" %}
+{% block title %}Create List - My Todo-s{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <h2 class="page-title">Create a new list</h2>
+    <p class="page-subtitle">Give your list a title (e.g. Home, Work, School).</p>
+  </div>
+
+  <div class="panel">
+    {% if form.non_field_errors %}
+      <div class="auth-alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" class="new-list-form" novalidate>
+      {% csrf_token %}
+
+      {# optional: redirect user back to where they came from #}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.title.id_for_label }}">List title</label>
+        {{ form.title }}
+
+        {% for e in form.title.errors %}
+          <div class="field-error">{{ e }}</div>
+        {% endfor %}
+
+        {% if form.title.help_text %}
+          <div class="help">{{ form.title.help_text|safe }}</div>
+        {% endif %}
+      </div>
+
+      <div class="actions-row">
+        <a class="appbtn" href="{% url 'todos:lists' %}">Cancel</a>
+        <button class="appbtn primary" type="submit">Create list</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

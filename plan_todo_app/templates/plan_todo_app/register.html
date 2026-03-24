@@ -1,0 +1,51 @@
+{% extends "plan_todo_app/base.html" %}
+{% block title %}Register - My Todo-s{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-card">
+    <h2 class="auth-title">Create account</h2>
+    <p class="auth-subtitle">Make an account to keep your lists private.</p>
+
+    {% if form.non_field_errors %}
+      <div class="auth-alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" class="auth-form" novalidate>
+      {% csrf_token %}
+
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        {% if form.username.help_text %}<div class="help">{{ form.username.help_text|safe }}</div>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password1.id_for_label }}">Password</label>
+        {{ form.password1 }}
+        {% for e in form.password1.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        {% if form.password1.help_text %}<div class="help">{{ form.password1.help_text|safe }}</div>{% endif %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+        {{ form.password2 }}
+        {% for e in form.password2.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+        {% if form.password2.help_text %}<div class="help">{{ form.password2.help_text|safe }}</div>{% endif %}
+      </div>
+
+      <button class="appbtn primary auth-submit" type="submit">Create account</button>
+
+      <div class="auth-links">
+        <span>Already have an account?</span>
+        <a href="{% url 'plan_todo_app:login' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Sign in</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

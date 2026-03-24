@@ -1,0 +1,35 @@
+{% extends "plan_todo_app/base.html" %}
+{% block title %}My Lists - My Todo-s{% endblock %}
+
+{% block content %}
+  <div class="page-head">
+    <h2 class="page-title">My Lists</h2>
+    <p class="page-subtitle">Create a list and click it to view its todos.</p>
+  </div>
+
+  <div class="panel">
+    <form class="new-list-form" action="{% url 'plan_todo_app:create_list' %}" method="post">
+      {% csrf_token %}
+      <div class="new-list-row">
+        <div class="new-list-field">
+          <label for="list-title">List title</label>
+          <input id="list-title" type="text" name="title" maxlength="255" placeholder="Work" required>
+          {% if list_error %}
+            <div class="field-error">{{ list_error }}</div>
+          {% endif %}
+        </div>
+        <button class="appbtn primary" type="submit">Create</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="lists-grid">
+    {% for l in lists %}
+      <a class="list-card" href="{% url 'plan_todo_app:list_detail' l.id %}">
+        <div class="list-card-title">{{ l.name }}</div>
+      </a>
+    {% empty %}
+      <div class="empty">No lists yet. Create one above.</div>
+    {% endfor %}
+  </div>
+{% endblock %}

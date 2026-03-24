@@ -1,0 +1,47 @@
+{% extends "plan_todo_app/base.html" %}
+{% block title %}Login - My Todo-s{% endblock %}
+
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-card">
+    <h2 class="auth-title">Login</h2>
+    <p class="auth-subtitle">Sign in to view your lists and todos.</p>
+
+    {% if form.non_field_errors %}
+      <div class="auth-alert">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" class="auth-form" novalidate>
+      {% csrf_token %}
+
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
+
+      <div class="field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <div class="field">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+        {% for e in form.password.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+      </div>
+
+      <button class="appbtn primary auth-submit" type="submit">Sign in</button>
+
+      <div class="auth-links">
+        <a href="{% url 'plan_todo_app:password_reset' %}">Forgot password?</a>
+        <span class="dot">•</span>
+
+        {# Preserve next when sending user to register #}
+        <a href="{% url 'plan_todo_app:register' %}{% if next %}?next={{ next|urlencode }}{% endif %}">
+          Create an account
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
