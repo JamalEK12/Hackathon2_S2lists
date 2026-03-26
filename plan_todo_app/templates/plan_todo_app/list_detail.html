@@ -85,7 +85,7 @@
 
       <div class="pill">
         {% if t.due_date %}
-          <span class="pill-icon" aria-hidden="true">⏳</span>
+          <span class="pill-icon" aria-hidden="true">Due Date:</span>
           {{ t.due_date|date:"jS M Y" }}
         {% endif %}
       </div>
@@ -93,11 +93,11 @@
       <div class="right">
         <div class="actions">
           <a class="action edit" title="edit"
-             href="{% url 'plan_todo_app:list_detail' todo_list.id %}?filter={{ filter_value }}&sort={{ sort_value }}&edit={{ t.id }}">✎</a>
+             href="{% url 'plan_todo_app:list_detail' todo_list.id %}?filter={{ filter_value }}&sort={{ sort_value }}&edit={{ t.id }}">Edit</a>
 
           <form action="{% url 'plan_todo_app:delete' todo_list.id t.id %}" method="post" onsubmit="return confirm('Delete this todo?');">
             {% csrf_token %}
-            <button class="action del" title="delete" type="submit">🗑</button>
+            <button class="action del" title="delete" type="submit">Delete</button>
           </form>
         </div>
 

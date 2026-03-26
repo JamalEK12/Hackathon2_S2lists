@@ -10,6 +10,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("lists/", views_lists.lists_index, name="lists"),
     path("lists/<int:list_id>/", views_detail.list_detail, name="list_detail"),
+    path("lists/<int:list_id>/delete/", views_lists.delete_list, name="delete_list"),
     path("lists/<int:list_id>/add/", views_detail.add_todo, name="add"),
     path("lists/<int:list_id>/update/<int:todo_id>/", views_detail.update_todo, name="update"),
     path("lists/<int:list_id>/delete/<int:todo_id>/", views_detail.delete_todo, name="delete"),

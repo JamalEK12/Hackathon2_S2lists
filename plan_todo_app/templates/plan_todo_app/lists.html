@@ -25,9 +25,16 @@
 
   <div class="lists-grid">
     {% for l in lists %}
-      <a class="list-card"  href="{% url 'plan_todo_app:list_detail' l.id %}">
-        <div class="panel">{{ l.name }}</div>
-      </a>
+      <div class="list-card">
+        <div class="list-card-title">{{ l.name }}</div>
+        <div class="list-card-actions">
+          <a class="list-card-link" href="{% url 'plan_todo_app:list_detail' l.id %}">Open list</a>
+          <form action="{% url 'plan_todo_app:delete_list' l.id %}" method="post" onsubmit="return confirm('Delete this list and all its todos?');">
+            {% csrf_token %}
+            <button class="list-delete-btn" type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
     {% empty %}
       <div class="empty">No lists yet. Create one above.</div>
     {% endfor %}

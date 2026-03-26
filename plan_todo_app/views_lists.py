@@ -33,6 +33,16 @@ def create_list(request):
     messages.success(request, f"List '{todo_list.name}' created.")
     return redirect("plan_todo_app:list_detail", list_id=todo_list.id)
 
+
+@login_required
+@require_POST
+def delete_list(request, list_id):
+    todo_list = get_object_or_404(List, pk=list_id, owner=request.user)
+    list_name = todo_list.name
+    todo_list.delete()
+    messages.success(request, f"List '{list_name}' deleted.")
+    return redirect("plan_todo_app:lists")
+
 def list_detail(request, list_id):
     list_obj = get_object_or_404(List, pk=list_id)
     todos = Todo.objects.filter(todo_list=list_obj)
