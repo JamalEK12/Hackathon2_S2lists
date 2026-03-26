@@ -12,7 +12,7 @@ if os.environ.get("DJANGO_DEVELOPMENT"):
 load_dotenv()
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = [
     'hackathon-todolist-7396f9a29175.herokuapp.com',
     'localhost',
@@ -31,6 +31,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -77,11 +78,12 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
-
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
