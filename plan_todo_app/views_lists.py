@@ -1,12 +1,29 @@
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods, require_POST
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_POST
 from django.utils.http import url_has_allowed_host_and_scheme
 from .models import List
-
-from django.views.decorators.http import require_http_methods
-
 from .models import Todo
+# Inline update view for a list
+@login_required
+@require_http_methods(["POST"])
+def update_list(request, list_id):
+    list_obj = get_object_or_404(List, pk=list_id, owner=request.user)
+    new_name = request.POST.get("name", "").strip()
+    if new_name:
+        list_obj.name = new_name
+        list_obj.save()
+    return redirect('plan_todo_app:lists')
+
+# Delete view for a list
+@login_required
+@require_http_methods(["POST"])
+def delete_list(request, list_id):
+    list_obj = get_object_or_404(List, pk=list_id, owner=request.user)
+    list_obj.delete()
+    return redirect('plan_todo_app:lists')
+
 
 
 @login_required
